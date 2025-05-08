@@ -1,4 +1,3 @@
-
 import { 
   FileCheck,
   Users,
@@ -6,6 +5,7 @@ import {
   Shield,
   FileText
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const features = [
   {
@@ -37,8 +37,21 @@ const features = [
 
 const WorkflowSection = () => {
   return (
-    <div className="bg-background py-24 sm:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+    <motion.div
+      className="relative bg-background py-24 sm:py-32 overflow-hidden"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.8, ease: 'easeOut' }}
+    >
+      {/* Low-opacity background image */}
+      <img
+        src="/framework-bg.jpg"
+        alt="Framework background"
+        className="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none select-none"
+        aria-hidden="true"
+      />
+      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">
           <h2 className="text-base font-semibold leading-7 text-brand-600">How It Works</h2>
           <p className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -69,7 +82,7 @@ const WorkflowSection = () => {
           </dl>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

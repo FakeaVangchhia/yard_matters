@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Building, MapPin, ArrowRight, CheckCircle, Filter } from "lucide-react";
@@ -34,6 +33,7 @@ const propertyData = [
     size: "3.5 acres",
     projectType: "Residential",
     verified: true,
+    budget: 8, // in Lakh
     description: "Flat land suitable for residential development with good connectivity to major highways.",
   },
   {
@@ -42,6 +42,7 @@ const propertyData = [
     size: "2.2 acres",
     projectType: "Mixed Use",
     verified: true,
+    budget: 15,
     description: "Prime location in tech corridor suitable for mixed-use development with residential and commercial components.",
   },
   {
@@ -50,6 +51,7 @@ const propertyData = [
     size: "1.8 acres",
     projectType: "Commercial",
     verified: true,
+    budget: 22,
     description: "Commercial land in developing area, close to upcoming metro station and business district.",
   },
   {
@@ -58,6 +60,7 @@ const propertyData = [
     size: "4.2 acres",
     projectType: "Residential",
     verified: false,
+    budget: 28,
     description: "Large parcel suitable for premium housing development in emerging suburb with growth potential.",
   },
   {
@@ -66,6 +69,7 @@ const propertyData = [
     size: "0.8 acres",
     projectType: "Commercial",
     verified: true,
+    budget: 35,
     description: "Rare opportunity for commercial development in established business area with high foot traffic.",
   },
   {
@@ -74,8 +78,17 @@ const propertyData = [
     size: "3.0 acres",
     projectType: "Mixed Use",
     verified: true,
+    budget: 45,
     description: "Waterfront property suitable for hospitality or mixed-use development with residential component.",
   },
+];
+
+const budgetRanges = [
+  { label: "All", value: "all" },
+  { label: "0–10L", value: "0-10" },
+  { label: "10–20L", value: "10-20" },
+  { label: "20–30L", value: "20-30" },
+  { label: "30L+", value: "30+" },
 ];
 
 const Properties = () => {
@@ -87,6 +100,7 @@ const Properties = () => {
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [budgetFilter, setBudgetFilter] = useState("all");
 
   // Form state for interest dialog
   const [interestForm, setInterestForm] = useState({
@@ -118,7 +132,15 @@ const Properties = () => {
     
     const matchesVerified = !filters.verified || property.verified;
     
-    return matchesSearch && matchesType && matchesVerified;
+    let matchesBudget = true;
+    if (budgetFilter !== "all") {
+      if (budgetFilter === "0-10") matchesBudget = property.budget >= 0 && property.budget <= 10;
+      else if (budgetFilter === "10-20") matchesBudget = property.budget > 10 && property.budget <= 20;
+      else if (budgetFilter === "20-30") matchesBudget = property.budget > 20 && property.budget <= 30;
+      else if (budgetFilter === "30+") matchesBudget = property.budget > 30;
+    }
+    
+    return matchesSearch && matchesType && matchesVerified && matchesBudget;
   });
 
   const container = {
@@ -164,6 +186,19 @@ const Properties = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pr-10"
               />
+            </div>
+            {/* Budget Filter Bar */}
+            <div className="flex items-center gap-2 overflow-x-auto py-2">
+              {budgetRanges.map((range) => (
+                <Button
+                  key={range.value}
+                  variant={budgetFilter === range.value ? "default" : "outline"}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${budgetFilter === range.value ? 'bg-gradient-to-r from-[#A8FF78] to-[#43C97F] text-[#14532d] shadow' : 'border-[#A8FF78] text-[#14532d] hover:bg-[#A8FF78]/20'}`}
+                  onClick={() => setBudgetFilter(range.value)}
+                >
+                  {range.label}
+                </Button>
+              ))}
             </div>
             <div className="flex items-center gap-4">
               <div className="md:hidden flex-1">
@@ -235,63 +270,35 @@ const Properties = () => {
             </div>
           ) : (
             <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
               variants={container}
               initial="hidden"
               animate="show"
             >
               {filteredProperties.map((property) => (
-                <motion.div 
+                <motion.div
                   key={property.id}
                   variants={item}
-                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                  className="bg-background border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all"
+                  className="bg-white rounded-xl shadow-lg p-6 flex flex-col gap-4 border border-[#A8FF78]/40 hover:shadow-2xl transition-all duration-300"
                 >
-                  <div className="bg-gradient-to-r from-[#14532d]/10 to-brand-50 p-4 flex items-start justify-between">
-                    <div className="flex gap-3">
-                      <div className="p-2 bg-background/80 backdrop-blur-sm rounded-md">
-                        <Building className="h-6 w-6 text-[#14532d]" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-                          <span className="font-medium">{property.location}</span>
-                        </div>
-                        <p className="text-sm mt-1">{property.size}</p>
-                      </div>
-                    </div>
-                    {property.verified && (
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
-                        <CheckCircle className="h-3 w-3" />
-                        Verified
-                      </Badge>
-                    )}
+                  <div className="flex items-center gap-3 mb-2">
+                    <Building className="h-6 w-6 text-[#43C97F]" />
+                    <span className="text-lg font-bold text-[#14532d]">{property.location}</span>
+                    {property.verified && <CheckCircle className="h-5 w-5 text-[#43C97F] ml-2" />}
                   </div>
-                  
-                  <div className="p-4">
-                    <div className="mb-3">
-                      <Badge variant="secondary">{property.projectType}</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                      {property.description}
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <Button variant="link" className="text-brand-600 p-0 h-auto">
-                        View details
-                      </Button>
-                      <Button 
-                        onClick={() => {
-                          setSelectedProperty(property.id);
-                          setShowInterestDialog(true);
-                        }}
-                        size="sm" 
-                        className="bg-[#14532d] hover:bg-[#14532d]/90 text-white flex items-center gap-1"
-                      >
-                        <span>Express Interest</span>
-                        <ArrowRight className="h-4 w-4" />
-                      </Button>
-                    </div>
+                  <div className="flex flex-wrap gap-2 text-sm text-[#14532d]/80">
+                    <span className="bg-[#A8FF78]/30 text-[#14532d] px-2 py-1 rounded">{property.size}</span>
+                    <span className="bg-[#A8FF78]/30 text-[#14532d] px-2 py-1 rounded">{property.projectType}</span>
+                    <span className="bg-[#A8FF78]/30 text-[#14532d] px-2 py-1 rounded">Budget: ₹{property.budget}L</span>
                   </div>
+                  <p className="text-[#14532d] mt-2 flex-1">{property.description}</p>
+                  <Button
+                    variant="default"
+                    className="mt-4 w-full rounded-full font-semibold bg-gradient-to-r from-[#A8FF78] to-[#43C97F] text-[#14532d] hover:from-[#43C97F] hover:to-[#A8FF78] border-none"
+                    onClick={() => setSelectedProperty(property.id)}
+                  >
+                    View Details
+                  </Button>
                 </motion.div>
               ))}
             </motion.div>

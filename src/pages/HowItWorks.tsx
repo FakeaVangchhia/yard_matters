@@ -94,7 +94,11 @@ const HowItWorks = () => {
             </div>
             
             <div className="relative max-w-4xl mx-auto">
-              {/* Connecting line */}
+              {/* Neon animated timeline */}
+              <div className="neon-timeline hidden md:block">
+                <div className="neon-flow"></div>
+              </div>
+              {/* Connecting line (fallback for mobile) */}
               <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-[#14532d]/20 z-0 hidden md:block"></div>
               
               {processSteps.map((step, index) => (
@@ -240,3 +244,35 @@ const HowItWorks = () => {
 };
 
 export default HowItWorks;
+
+<style>
+{`
+  .neon-timeline {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 100%;
+    background: rgba(20, 83, 45, 0.2);
+    z-index: 0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .neon-flow {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(180deg, #00ffb3 0%, #00e0ff 100%);
+    filter: blur(6px) brightness(1.5);
+    border-radius: 3px;
+    animation: neonMove 2.5s linear infinite;
+  }
+  @keyframes neonMove {
+    0% { top: 0; opacity: 0.7; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0.7; }
+  }
+`}
+</style>

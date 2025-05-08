@@ -1,4 +1,3 @@
-
 import { motion, useScroll, useTransform } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -24,60 +23,27 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         
-        <motion.div
-          style={{ opacity }}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          variants={fadeIn}
-        >
+        <div>
           <TrustSignalsSection />
-        </motion.div>
+        </div>
         
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          variants={fadeIn}
-          className="relative"
-        >
+        <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-r from-[#14532d]/5 to-[#14532d]/10 pointer-events-none"></div>
           <WorkflowSection />
-        </motion.div>
+        </div>
         
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          variants={fadeIn}
-        >
+        <div>
           <PrivacySection />
-        </motion.div>
+        </div>
         
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          variants={fadeIn}
-          className="relative"
-        >
+        <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-r from-[#14532d]/5 to-[#14532d]/10 pointer-events-none"></div>
           <FaqSection />
-        </motion.div>
+        </div>
         
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          variants={fadeIn}
-        >
+        <div>
           <CTASection />
-        </motion.div>
+        </div>
       </main>
       <Footer />
     </div>
